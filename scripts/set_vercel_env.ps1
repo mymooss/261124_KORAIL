@@ -17,10 +17,16 @@ $pw = [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropService
 $pwEnc = [Uri]::EscapeDataString($pw)
 $url = "postgresql://postgres.${ref}:${pwEnc}@${poolerHost}:6543/postgres?sslmode=require"
 
-npx --yes vercel@latest env rm SECRET_KEY production --yes 2>$null | Out-Null
-npx --yes vercel@latest env rm DATABASE_URL production --yes 2>$null | Out-Null
-$secret | npx --yes vercel@latest env add SECRET_KEY production
-$url | npx --yes vercel@latest env add DATABASE_URL production
+# Vercel CLI 는 안내 문구를 stderr 로 출력한다. PowerShell 5.1 에서 이를 오류로 보고 멈추지 않도록
+# 외부 명령 구간에서는 Continue 로 바꾸고, 종료 코드로 성공 여부를 판단한다.
+$ErrorActionPreference = 'Continue'
+cmd /c "npx --yes vercel@latest env rm SECRET_KEY production --yes >nul 2>&1"
+cmd /c "npx --yes vercel@latest env rm DATABASE_URL production --yes >nul 2>&1"
+$secret | cmd /c "npx --yes vercel@latest env add SECRET_KEY production 2>&1"
+if ($LASTEXITCODE -ne 0) { throw 'SECRET_KEY 설정 실패' }
+$url | cmd /c "npx --yes vercel@latest env add DATABASE_URL production 2>&1"
+if ($LASTEXITCODE -ne 0) { throw 'DATABASE_URL 설정 실패' }
+$ErrorActionPreference = 'Stop'
 
 # 로컬에서도 같은 DB 로 붙을 수 있도록 .env.production.local 에 기록 (git 제외 파일)
 $lines = Get-Content '.env.production.local' | Where-Object { $_ -notlike 'DATABASE_URL=*' }

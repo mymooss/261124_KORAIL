@@ -6,7 +6,15 @@ from zoneinfo import ZoneInfo
 
 DT_FMT = "%Y-%m-%d %H:%M:%S"
 # 서버리스(Vercel)는 UTC 로 돌기 때문에 화면·로그 시각은 APP_TZ 기준으로 만든다.
-TZ = ZoneInfo(os.environ.get("APP_TZ", "Asia/Seoul"))
+def env(name, default=""):
+    """환경변수 읽기. Windows PowerShell 로 등록할 때 붙을 수 있는 BOM·공백을 제거한다."""
+    v = os.environ.get(name)
+    if v is None:
+        return default
+    return v.replace("﻿", "").strip()
+
+
+TZ = ZoneInfo(env("APP_TZ", "Asia/Seoul") or "Asia/Seoul")
 
 
 def now_local():
