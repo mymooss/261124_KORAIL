@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}로그인 · KTX 디지털 트윈 관제 시스템{% endblock %}
+{% block body_class %}page{% endblock %}
+{% block content %}
+<div class="login-wrap">
+  <form class="panel login-card" method="post" action="{{ url_for('auth.login') }}">
+    <div class="brand">
+      <div class="logo"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round"><path d="M4 16V8a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v8"/><path d="M4 16h16"/><circle cx="8" cy="12" r="1.2"/><circle cx="16" cy="12" r="1.2"/><path d="M7 20l2-4M17 20l-2-4"/></svg></div>
+      <div><h1>KTX 디지털 트윈 관제 시스템</h1><div class="sub">관제사 로그인 (교육·시연용)</div></div>
+    </div>
+    <input type="hidden" name="next" value="{{ next }}">
+    <label for="username">아이디</label>
+    <input id="username" name="username" autocomplete="username" value="{{ username }}" required autofocus>
+    <label for="password">비밀번호</label>
+    <input id="password" name="password" type="password" autocomplete="current-password" required>
+    <button class="btn on" type="submit">로그인</button>
+    {% if error %}<div class="login-err">{{ error }}</div>{% endif %}
+    <div class="login-help">권한: 조회자(viewer) · 관제사(operator) · 관리자(admin)<br>기본 계정은 README를 참고하고, 처음 로그인한 뒤 비밀번호를 바꾸세요.</div>
+  </form>
+</div>
+{% endblock %}

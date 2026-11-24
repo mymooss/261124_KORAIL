@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}KTX 디지털 트윈 관제 시스템{% endblock %}</title>
+<script>try{var th=localStorage.getItem("ktx-theme");if(th==="light"||th==="dark")document.documentElement.dataset.theme=th;}catch(e){}</script>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/console.css') }}">
+</head>
+<body class="{% block body_class %}{% endblock %}" {% block body_attrs %}{% endblock %}>
+<div class="notice">※ 본 시스템은 교육 및 시연용 가상 시뮬레이션이며, 실제 철도 관제 시스템 및 실제 운행 데이터와 무관합니다.</div>
+{% block content %}{% endblock %}
+<div class="notice bottom">※ 본 시스템은 교육 및 시연용 가상 시뮬레이션이며, 실제 철도 관제 시스템 및 실제 운행 데이터와 무관합니다. 모든 열차 번호·속도·장애·AI 분석 결과는 가상으로 생성된 데이터입니다.</div>
+<div class="etoast" id="etoast" role="status" aria-live="polite"></div>
+{% block scripts %}{% endblock %}
+</body>
+</html>

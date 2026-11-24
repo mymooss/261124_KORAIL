@@ -1,0 +1,12 @@
+.venv/
+instance/
+.env
+__pycache__/
+*.pyc
+.pytest_cache/
+.vercel/
+.claude/
+supabase/.temp/
+supabase/.branches/
+.env.*.local
+!.env.example

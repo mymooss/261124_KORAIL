@@ -1,0 +1,8 @@
+.venv
+instance
+tests
+supabase
+.pytest_cache
+.claude
+.env
+*.db

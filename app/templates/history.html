@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block title %}장애 이력 · KTX 디지털 트윈 관제 시스템{% endblock %}
+{% block body_class %}page{% endblock %}
+{% block body_attrs %}data-role="{{ user.role }}"{% endblock %}
+{% block content %}
+<header>
+  <div class="brand">
+    <div class="logo"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round"><path d="M4 16V8a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v8"/><path d="M4 16h16"/><circle cx="8" cy="12" r="1.2"/><circle cx="16" cy="12" r="1.2"/><path d="M7 20l2-4M17 20l-2-4"/></svg></div>
+    <div><h1>장애 이력 · 로그 조회</h1><div class="sub">KTX 디지털 트윈 관제 시스템 · 가상 운행 시뮬레이션 (교육·시연용)</div></div>
+  </div>
+  <div class="hdr-right">
+    <a class="btn" href="{{ url_for('views.console') }}">← 관제 화면</a>
+    <button class="btn" id="btnTheme" title="다크/화이트 모드 전환">☀ 화이트 모드</button>
+    <div class="userchip"><b>{{ user.display_name }}</b><span>{{ user.role_label }} · <a href="{{ url_for('auth.password') }}" style="color:inherit">비밀번호 변경</a></span></div>
+    <form method="post" action="{{ url_for('auth.logout') }}"><button class="btn" type="submit">로그아웃</button></form>
+  </div>
+</header>
+
+<div class="page-main">
+  <div class="hist-grid">
+    <section class="panel sec" style="margin:0">
+      <h3>장애 이력</h3>
+      <div class="toolbar">
+        <select id="fStatus" title="상태">
+          <option value="resolved">해결된 장애</option>
+          <option value="active">진행 중</option>
+          <option value="all">전체</option>
+        </select>
+        <span class="sp"></span>
+        <a class="btn" href="/api/faults/export.csv" download>⬇ 장애 이력 CSV</a>
+      </div>
+      <div class="tblwrap">
+        <table class="grid">
+          <thead><tr><th>코드</th><th>유형</th><th>구간</th><th>심각도</th><th>발생</th><th>해결</th><th>소요</th><th>복구자</th></tr></thead>
+          <tbody id="fRows"><tr><td colspan="8" class="empty">불러오는 중…</td></tr></tbody>
+        </table>
+      </div>
+      <div class="pager"><span id="fInfo"></span><button class="btn" id="fPrev">이전</button><button class="btn" id="fNext">다음</button></div>
+    </section>
+
+    <section class="panel sec" style="margin:0" id="reportPanel">
+      <h3>장애 처리 리포트</h3>
+      <div id="report"><div class="card empty">왼쪽 표에서 장애를 선택하면 타임라인과 처리 리포트가 표시됩니다.</div></div>
+    </section>
+
+    <section class="panel sec full" style="margin:0">
+      <h3>KPI 추이</h3>
+      <div class="toolbar">
+        <select id="kMin" title="조회 기간">
+          <option value="15">최근 15분</option>
+          <option value="30" selected>최근 30분</option>
+          <option value="60">최근 1시간</option>
+          <option value="180">최근 3시간</option>
+          <option value="1440">최근 24시간</option>
+        </select>
+        <span class="sp"></span><span class="hint" id="kInfo" style="margin:0"></span>
+      </div>
+      <svg class="chart" id="kChart" viewBox="0 0 800 220" preserveAspectRatio="none"></svg>
+      <div class="legend-row"><span><i style="background:var(--ok)"></i>정시율(%)</span><span><i style="background:var(--accent)"></i>안전지수</span><span><i style="background:var(--bad)"></i>지연 열차(편, 오른쪽 축)</span></div>
+    </section>
+
+    <section class="panel sec full" style="margin:0">
+      <h3>이벤트 로그 검색</h3>
+      <div class="toolbar">
+        <div class="cats" id="eCats">
+          <label><input type="checkbox" value="info">정보</label><label><input type="checkbox" value="ok">정상</label>
+          <label><input type="checkbox" value="warn">주의</label><label><input type="checkbox" value="danger">위험</label>
+          <label><input type="checkbox" value="ai">AI</label><label><input type="checkbox" value="action">조치</label>
+          <label><input type="checkbox" value="audit">감사</label>
+        </div>
+        <input type="datetime-local" id="eFrom" title="시작 (실제 시각)">
+        <input type="datetime-local" id="eTo" title="끝 (실제 시각)">
+        <button class="btn on" id="eSearch">검색</button>
+        <span class="sp"></span>
+        <button class="btn" id="eCsv">⬇ 로그 CSV</button>
+        <button class="btn" id="eDelete" data-perm="admin">로그 전체 삭제</button>
+      </div>
+      <div class="hlog" id="eList"></div>
+      <div class="pager"><span id="eInfo"></span><button class="btn" id="eMore">더 보기</button></div>
+    </section>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/api.js') }}"></script>
+<script src="{{ url_for('static', filename='js/history.js') }}"></script>
+{% endblock %}
