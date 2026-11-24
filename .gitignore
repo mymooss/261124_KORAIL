@@ -8,5 +8,7 @@ __pycache__/
 .claude/
 supabase/.temp/
 supabase/.branches/
-.env.*.local
+supabase/seed.sql
+.vercel
+.env*
 !.env.example
